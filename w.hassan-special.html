@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>w.hassan-special</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--bg:#f3f5fb;--card:#fff;--tx:#18202f;--mut:#667089;--br:#dce2ee;--ac:#4f46e5;--ac2:#0ea5e9;--ok:#16a34a;--wn:#d97706;--er:#dc2626;--hl:#dcfce7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1320;--card:#171e30;--tx:#e8ecf6;--mut:#93a0bd;--br:#2a3350;--ac:#818cf8;--ac2:#38bdf8;--hl:#14532d}}
+:root[data-theme="dark"]{--bg:#0e1320;--card:#171e30;--tx:#e8ecf6;--mut:#93a0bd;--br:#2a3350;--ac:#818cf8;--ac2:#38bdf8;--hl:#14532d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "Nirmala UI","Noto Sans Bengali",system-ui,sans-serif}
+header{padding:28px 16px 18px;text-align:center;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+header h1{margin:0;font-size:clamp(24px,5vw,34px);letter-spacing:.5px}header p{margin:6px 0 0;opacity:.9}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:16px 18px;border-top:4px solid var(--ac)}
+.card:nth-child(2){border-top-color:var(--ac2)}.card:nth-child(3){border-top-color:var(--wn)}.card:nth-child(4){border-top-color:var(--ok)}.card:nth-child(5){border-top-color:#db2777}
+h2{margin:0 0 10px;font-size:17px;display:flex;align-items:center;gap:10px}
+h2 b{background:var(--ac);color:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:14px}
+#drop{border:2px dashed var(--ac);border-radius:12px;padding:30px 12px;text-align:center;cursor:pointer;color:var(--mut)}
+#drop.on{background:var(--hl)}#drop strong{color:var(--tx);display:block;font-size:16px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}label{display:flex;gap:8px;align-items:center;cursor:pointer}
+input[type=number]{width:64px;padding:6px;border:1px solid var(--br);border-radius:8px;background:var(--bg);color:var(--tx)}
+select{padding:7px;border:1px solid var(--br);border-radius:8px;background:var(--bg);color:var(--tx);max-width:100%}
+button{background:var(--ac);color:#fff;border:0;border-radius:9px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer}
+button.s{background:var(--bg);color:var(--tx);border:1px solid var(--br)}button:disabled{opacity:.45;cursor:not-allowed}
+.set{border:1px solid var(--br);border-radius:10px;padding:10px 12px;margin-top:8px}.set small{color:var(--mut);display:block;word-break:break-all}
+.w{color:var(--wn);font-size:13px;margin-top:4px}.ok{color:var(--ok)}.er{color:var(--er)}
+.tw{overflow-x:auto;max-height:480px;overflow-y:auto;border:1px solid var(--br);border-radius:10px;margin-top:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid var(--br);padding:6px 8px;text-align:left;vertical-align:top;min-width:90px}
+th{position:sticky;top:0;background:var(--card)}td.c{background:var(--hl);font-weight:600}td.t{min-width:220px}td.x{min-width:260px;color:var(--mut)}
+.hint{color:var(--mut);font-size:13px;margin:6px 0 0}
+</style></head><body>
+<header><h1>w.hassan-special</h1><p>Word (.docx) → CSV কনভার্টার · MCQ প্রশ্নব্যাংক</p></header>
+<main>
+<section class="card"><h2><b>১</b> ফাইল আপলোড</h2>
+<div id="drop"><strong>এখানে Word ফাইল ড্রপ করুন বা ক্লিক করুন</strong>একসাথে একাধিক .docx দেওয়া যাবে (Question + Answer, অথবা একটি Combined ফাইল)</div>
+<input id="fi" type="file" accept=".docx" multiple hidden>
+<p class="hint">Question ও Answer ফাইলের নাম একই হলে (শুধু Question/Answer আলাদা) স্বয়ংক্রিয়ভাবে একই সেটে জোড়া লাগবে। সবকিছু আপনার ব্রাউজারেই হয়, কিছু আপলোড হয় না।</p></section>
+<section class="card"><h2><b>২</b> শনাক্ত হওয়া সেট</h2><div id="sets"><span class="hint">এখনো কোনো ফাইল নেই।</span></div></section>
+<section class="card"><h2><b>৩</b> সেটিংস</h2><div class="row">
+<label><input type="checkbox" id="rev" checked> ক্রম উল্টো (১০০ → ০১)</label>
+<label><input type="checkbox" id="sh"> A,B,C,D অপশন উল্টোপাল্টা (সঠিক উত্তর ঠিক থাকবে)</label>
+<label><input type="checkbox" id="fix" checked> “সবগুলো/উপরের/কোনটিই নয়” ধরনের অপশন থাকলে সেই প্রশ্ন শাফল নয়</label></div>
+<div class="row" style="margin-top:12px"><label>প্রতি সেটের ভার্সন সংখ্যা <input type="number" id="vn" min="1" max="10" value="1"></label>
+<button class="s" id="rs">🔀 আবার শাফল করুন</button></div>
+<p class="hint">ভার্সন ২+ দিলে প্রতিটির অপশন আলাদাভাবে শাফল হয় (Set-A, Set-B…)।</p></section>
+<section class="card"><h2><b>৪</b> প্রিভিউ</h2><div class="row"><select id="sel"></select><span id="st" class="hint"></span></div>
+<div class="tw"><table id="tb"></table></div></section>
+<section class="card"><h2><b>৫</b> ডাউনলোড</h2><div class="row">
+<button id="d1" disabled>⬇ নির্বাচিত CSV</button><button id="da" class="s" disabled>🗜 সব CSV (ZIP)</button><span id="dm" class="hint"></span></div>
+<p class="hint">CSV-তে UTF-8 BOM থাকে, তাই Excel-এ বাংলা ঠিকভাবে দেখাবে। কলাম: title, type, option1–4, answer, explanation।</p></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),ch=(n,l)=>[...n.children].filter(c=>c.localName===l);
+const bn=s=>s.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d));
+const SYM={'±':'\\pm','×':'\\times','÷':'\\div','∝':'\\propto','∴':'\\therefore','π':'\\pi','θ':'\\theta','α':'\\alpha','β':'\\beta','γ':'\\gamma','λ':'\\lambda','μ':'\\mu','ω':'\\omega','Δ':'\\Delta','Ω':'\\Omega','ρ':'\\rho','σ':'\\sigma','τ':'\\tau','φ':'\\varphi','ε':'\\varepsilon','δ':'\\delta','η':'\\eta','∞':'\\infty','≈':'\\approx','≠':'\\neq','≤':'\\leq','≥':'\\geq','→':'\\rightarrow','°':'^{\\circ}','−':'-','·':'\\cdot','∑':'\\sum','∫':'\\int','∏':'\\prod'};
+const ms=t=>[...t].map(c=>SYM[c]?SYM[c]+' ':c).join('');
+const av=(e,d)=>e?(e.getAttribute('m:val')??d):d;
+function mk(n){return [...n.children].filter(c=>!/Pr$/.test(c.localName)).map(mt).join('')}
+function mt(n){const l=n.localName,c=x=>{const e=ch(n,x)[0];return e?mk(e):''};
+switch(l){
+case'r':return ch(n,'t').map(t=>ms(t.textContent)).join('');
+case'f':return`\\frac{${c('num')}}{${c('den')}}`;
+case'sSup':return`{${c('e')}}^{${c('sup')}}`;
+case'sSub':return`{${c('e')}}_{${c('sub')}}`;
+case'sSubSup':return`{${c('e')}}_{${c('sub')}}^{${c('sup')}}`;
+case'rad':{const d=c('deg');return d?`\\sqrt[${d}]{${c('e')}}`:`\\sqrt{${c('e')}}`}
+case'd':{const p=ch(n,'dPr')[0],g=(k,d)=>av(p&&ch(p,k)[0],d),q=x=>x===''?'.':x==='{'?'\\{':x==='}'?'\\}':x;
+return`\\left${q(g('begChr','('))}${ch(n,'e').map(mk).join(g('sepChr',','))}\\right${q(g('endChr',')'))}`}
+case'nary':{const p=ch(n,'naryPr')[0],k=av(p&&ch(p,'chr')[0],'∫'),s=c('sub'),u=c('sup');
+return(SYM[k]||k)+(s?`_{${s}}`:'')+(u?`^{${u}}`:'')+`{${c('e')}}`}
+case'func':{const f=c('fName');return(/^(sin|cos|tan|cot|sec|csc|log|ln|lim|exp)$/.test(f)?'\\'+f:f)+` ${c('e')}`}
+case'bar':return`\\overline{${c('e')}}`;
+case'acc':{const p=ch(n,'accPr')[0],k=av(p&&ch(p,'chr')[0],'^');return`${k==='→'?'\\vec':k==='~'?'\\tilde':'\\hat'}{${c('e')}}`}
+default:return mk(n)}}
+function emit(s){if(s.f==='m')return'$'+s.t+'$';if(!s.f)return s.t;
+const m=s.t.match(/^(\s*)([\s\S]*?)(\s*)$/),c=m[2];if(!c)return s.t;const f=s.f,L=m[1],R=m[3];
+if(f.includes('p'))return L+'$^{'+c+'}$'+R;if(f.includes('b'))return L+'$_{'+c+'}$'+R;
+const multi=/\s/.test(c),i=f.includes('i'),u=f.includes('u');let x;
+if(i&&u)x=multi?`\\text{\\underline{\\textit{${c}}}}`:`\\underline{\\it{${c}}}`;
+else if(i)x=multi?`\\textit{${c}}`:`\\it{${c}}`;else x=multi?`\\text{\\underline{${c}}}`:`\\underline{${c}}`;
+return L+'$'+x+'$'+R}
+function para(p){const segs=[],push=(t,f)=>{if(!t)return;const l=segs[segs.length-1];if(l&&l.f===f&&f!=='m')l.t+=t;else segs.push({t,f})};
+const walk=n=>{for(const c of n.children){const ln=c.localName;
+if(ln==='r'){let f='';const rp=ch(c,'rPr')[0];if(rp){const v=ch(rp,'vertAlign')[0]?.getAttribute('w:val');if(v==='superscript')f+='p';if(v==='subscript')f+='b';
+const i=ch(rp,'i')[0];if(i&&!['0','false'].includes(i.getAttribute('w:val')))f+='i';const u=ch(rp,'u')[0];if(u&&u.getAttribute('w:val')!=='none')f+='u'}
+let t='';for(const x of c.children){if(x.localName==='t')t+=x.textContent;else if(x.localName==='tab'||x.localName==='br')t+=' '}push(t,f)}
+else if(ln==='oMath')push(mk(c),'m');else if(ln==='oMathPara')ch(c,'oMath').forEach(m=>push(mk(m),'m'));
+else if(['hyperlink','smartTag','ins','sdt','sdtContent'].includes(ln))walk(c)}};
+walk(p);return segs.map(emit).join('')}
+const cellText=tc=>[...tc.children].map(c=>c.localName==='p'?para(c):c.localName==='tbl'?tblText(c):'').join(' ').replace(/\s+/g,' ').trim();
+const tblText=t=>ch(t,'tr').map(tr=>ch(tr,'tc').map(cellText).join(' ')).join(' ');
+const SPLIT=/^([\s\S]*?)\s*(?<!\S)A\.\s*([\s\S]*?)\s*(?<!\S)B\.\s*([\s\S]*?)\s*(?<!\S)C\.\s*([\s\S]*?)\s*(?<!\S)D\.\s*([\s\S]*)$/;
+function parseDoc(xml){const d=new DOMParser().parseFromString(xml,'application/xml'),body=ch(d.documentElement,'body')[0],R={q:{},a:{},w:[]};
+const num=t=>{const n=parseInt(bn(t).replace(/[^\d]/g,''));return isNaN(n)?null:n};
+for(const tbl of ch(body,'tbl'))for(const tr of ch(tbl,'tr')){const cs=ch(tr,'tc');
+if(cs.length>=8){const n=num(cellText(cs[0]));if(!n)continue;let ans=cellText(cs[6]).replace(/[^A-D]/g,''),ex=cellText(cs[7]);
+if(ans.length!==1){const m=ex.match(/^([A-D])\s*[;；]\s*/);if(m){ans=m[1];ex=ex.slice(m[0].length);R.w.push(`প্রশ্ন ${n}: Answer ঘর খালি ছিল, ব্যাখ্যার শুরুর "${m[1]};" থেকে উত্তর নেওয়া হয়েছে`)}else ans=''}
+R.q[n]={t:cellText(cs[1]),o:[2,3,4,5].map(i=>cellText(cs[i])),ans:ans?'ABCD'.indexOf(ans)+1:null,ex}}
+else if(cs.length===2&&ch(cs[1],'tbl').length){const n=num(cellText(cs[0]));if(!n)continue;const m=tblText(ch(cs[1],'tbl')[0]).match(SPLIT);
+if(!m){R.w.push(`প্রশ্ন ${n}: অপশন আলাদা করা যায়নি`);continue}R.q[n]={t:m[1].trim(),o:[m[2],m[3],m[4],m[5]].map(x=>x.trim())}}
+else if(cs.length===3){const n=num(cellText(cs[0])),a=cellText(cs[1]).replace(/[^A-D]/g,'');if(n&&a.length===1)R.a[n]={ans:'ABCD'.indexOf(a)+1,ex:cellText(cs[2])}}}
+return R}
+let sets=[],outs=[],cur=0;
+const keyOf=n=>n.replace(/\.docx$/i,'').toLowerCase().replace(/question|answer|প্রশ্ন|উত্তর/g,'').replace(/[\s_\-()]+/g,' ').trim();
+const nameOf=n=>n.replace(/\.docx$/i,'').replace(/^\d{10,}_/,'').replace(/[_\s-]*(question|answer)/ig,'').replace(/[\s_]+/g,'_').replace(/_+$/,'')||'set';
+async function addFiles(fl){for(const f of fl){if(!/\.docx$/i.test(f.name))continue;
+try{const z=await JSZip.loadAsync(await f.arrayBuffer()),x=await z.file('word/document.xml').async('string'),r=parseDoc(x),k=keyOf(f.name);
+let s=sets.find(s=>s.key===k);if(!s)sets.push(s={key:k,name:nameOf(f.name),files:[],q:{},a:{},w:[]});
+s.files.push(f.name);Object.assign(s.q,r.q);Object.assign(s.a,r.a);s.w.push(...r.w)}
+catch(e){sets.push({key:f.name,name:f.name,files:[f.name],q:{},a:{},w:['ফাইল পড়া যায়নি: '+e.message]})}}
+finalize();render0();build()}
+function finalize(){for(const s of sets){const ns=Object.keys(s.q).map(Number).sort((a,b)=>a-b),W=[...s.w.filter(x=>!x.startsWith('Q:'))];s.items=[];
+for(const n of ns){const q=s.q[n],a=s.a[n];s.items.push({n,t:q.t,o:q.o,ans:a?a.ans:q.ans,ex:a&&a.ex!=null?a.ex:(q.ex||'')});
+if(!(a||q.ans))W.push(`প্রশ্ন ${n}: উত্তর পাওয়া যায়নি`);if(q.o.some(x=>!x))W.push(`প্রশ্ন ${n}: কোনো অপশন খালি`)}
+const mx=ns.length?Math.max(...ns):0,miss=[];for(let i=1;i<=mx;i++)if(!s.q[i])miss.push(i);if(miss.length)W.push('অনুপস্থিত প্রশ্ন নম্বর: '+miss.join(', '));
+const ex=Object.keys(s.a).filter(n=>!s.q[n]);if(ex.length)W.push('প্রশ্ন ছাড়া উত্তর: '+ex.join(', '));s.warn=[...new Set(W)]}}
+function render0(){const el=$('#sets');el.innerHTML='';if(!sets.length){el.innerHTML='<span class="hint">এখনো কোনো ফাইল নেই।</span>';return}
+sets.forEach((s,i)=>{const d=document.createElement('div');d.className='set';const t=document.createElement('div');
+t.innerHTML=`<b></b> — <span class="${s.warn.length?'':'ok'}">${s.items.length}টি প্রশ্ন</span> `;t.firstChild.textContent=s.name;
+const b=document.createElement('button');b.className='s';b.textContent='✕ সরান';b.style.cssText='padding:3px 10px;margin-left:8px';b.onclick=()=>{sets.splice(i,1);render0();build()};t.append(b);
+const sm=document.createElement('small');sm.textContent=s.files.join(' + ');d.append(t,sm);
+s.warn.slice(0,8).forEach(w=>{const p=document.createElement('div');p.className='w';p.textContent='⚠ '+w;d.append(p)});
+if(s.warn.length>8){const p=document.createElement('div');p.className='w';p.textContent=`… আরও ${s.warn.length-8}টি সতর্কতা`;d.append(p)}el.append(d)})}
+const FIX=/সবগুলো|সবকটি|উপরের|কোনটিই|কোনোটিই|উভয়|none of|all of|both|above|neither/i;
+function shuf(x,fix){if(!x.ans||(fix&&x.o.some(t=>FIX.test(t))))return x;const p=[0,1,2,3];
+for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[p[i],p[j]]=[p[j],p[i]]}return{...x,o:p.map(i=>x.o[i]),ans:p.indexOf(x.ans-1)+1}}
+function build(){outs=[];const rev=$('#rev').checked,sh=$('#sh').checked,fx=$('#fix').checked,vn=Math.max(1,Math.min(10,+$('#vn').value||1));
+for(const s of sets)for(let v=0;v<vn;v++){let it=s.items.map(x=>sh?shuf(x,fx):{...x});if(rev)it.reverse();outs.push({name:s.name+(vn>1?'_Set-'+String.fromCharCode(65+v):''),items:it})}
+const sel=$('#sel');sel.innerHTML='';outs.forEach((o,i)=>{const op=document.createElement('option');op.value=i;op.textContent=o.name;sel.append(op)});
+cur=Math.min(cur,Math.max(0,outs.length-1));sel.value=cur;preview();$('#d1').disabled=$('#da').disabled=!outs.length}
+function preview(){const o=outs[cur],tb=$('#tb');tb.innerHTML='';if(!o){$('#st').textContent='';return}
+$('#st').textContent=`${o.items.length}টি সারি`;const th=document.createElement('tr');
+['#','title','option1','option2','option3','option4','answer','explanation'].forEach(h=>{const e=document.createElement('th');e.textContent=h;th.append(e)});tb.append(th);
+for(const x of o.items){const tr=document.createElement('tr'),v=[x.n,x.t,...x.o,x.ans??'',x.ex];
+v.forEach((c,i)=>{const e=document.createElement('td');e.textContent=c;if(i===1)e.className='t';if(i===7)e.className='x';if(i>=2&&i<=5&&x.ans===i-1)e.className='c';tr.append(e)});tb.append(tr)}}
+const csv=o=>'\ufeff'+[['title','type','option1','option2','option3','option4','answer','explanation'],...o.items.map(x=>[x.t,'MCQ',...x.o,x.ans??'',x.ex])].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+async function save(filename,data){const m=$('#dm');try{const b=data instanceof Blob?data:new Blob([data],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+a.href=URL.createObjectURL(b);a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);m.textContent='✔ ডাউনলোড শুরু হয়েছে: '+filename}catch(e){m.textContent='ডাউনলোড ব্যর্থ: '+(e&&e.message||e)}}
+$('#d1').onclick=()=>{const o=outs[cur];if(o)save(o.name+'.csv',csv(o))};
+$('#da').onclick=async()=>{const z=new JSZip();outs.forEach(o=>z.file(o.name+'.csv',csv(o)));save('w-hassan-special_csv.zip',await z.generateAsync({type:'blob'}))};
+$('#sel').onchange=e=>{cur=+e.target.value;preview()};
+['rev','sh','fix','vn'].forEach(i=>$('#'+i).onchange=build);$('#rs').onclick=build;
+const dz=$('#drop'),fi=$('#fi');dz.onclick=()=>fi.click();fi.onchange=()=>{addFiles([...fi.files]);fi.value=''};
+dz.ondragover=e=>{e.preventDefault();dz.classList.add('on')};dz.ondragleave=()=>dz.classList.remove('on');
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove('on');addFiles([...e.dataTransfer.files])};
+</script></body></html>
